@@ -14,7 +14,13 @@ Character vector of earthquakes description. Description consist of 3 lines: Loc
 If magnitude or deaths is absent, location only provided.
 }
 \description{
-Make a HTML description of the earthquakes
+Function eq_create_label() takes the dataset as an argument and creates an HTML label that can be used
+as the annotation text in the leaflet map. This function put together a character string for each earthquake that
+will show the cleaned location (as cleaned by the eq_location_clean() function descibed above),
+the magnitude (EQ_PRIMARY), and the total number of deaths (TOTAL_DEATHS),
+with boldface labels for each ("Location", "Total deaths", and "Magnitude").
+If an earthquake is missing values for any of these, both the label and the value are skipped for
+that element of the tag.
 }
 \examples{
 

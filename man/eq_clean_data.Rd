@@ -10,15 +10,15 @@ eq_clean_data(data)
 \item{data}{Raw earthquake data in the dataframe in format of NOAA earthquakes database.}
 }
 \value{
-Data frame with cleaned up data:
-- new DATE column added
-- LoCATION cleaned up
-- lines with no LONGITUDE or LATITUDE removed
-- lines with no Richter magnitude removed
-- lines with YEAR B.C. removed
+Data frame with cleaned up data
 }
 \description{
-Cleaning Earthquake data
+Under the cleaning we understand the following:
+new DATE column added;
+LOCATION cleaned up;
+lines with no LONGITUDE or LATITUDE removed;
+lines with no Richter magnitude removed;
+data with YEAR B.C. removed.
 }
 \examples{
 

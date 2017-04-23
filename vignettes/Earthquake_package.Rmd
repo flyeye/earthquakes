@@ -1,0 +1,202 @@
+---
+title: "Earthquakes package"
+author: "Alexey V. Popov"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Earthquakes package manual}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+## Earthquakes package
+
+Earthquakes package contains a few functions one can use to clean and visualize data about earthquake from [NOAA database](https://www.ngdc.noaa.gov/nndc/struts/form?t=101650&s=1&d=1). 
+
+First main function is *geom_timeline()*. It makes a ggplot geom object representing timeline within defined limits with earthquakes. 
+
+Second main function is *eq_map()*. It makes a interactive map with earthquakes epicentrum and popup information. 
+
+There are a few data cleaning and processing function. See details below.
+
+## Data
+
+ All functions works with data from [NOAA earthquakes database](https://www.ngdc.noaa.gov/nndc/struts/form?t=101650&s=1&d=1) presented by:
+  National Geophysical Data Center / World Data Service (NGDC/WDS): Significant Earthquake Database. National Geophysical Data Center, NOAA. doi:10.7289/V5TD9V7K
+
+ Package contains either raw data valid on 2017.04.23 and cleaned up sample. 
+  
+ Raw data can be accessed in the following way: 
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+  require(readr)
+  filename <- system.file("extdata", "earthquakes.tsv.gz", package = "earthquakes")
+  raw_data <- read_delim(filename, delim = "\t")
+```
+
+ Cleaned up sample is stored in *tbl_df data.frame* **earthquakes** (same name as package name) and can be accessed directly when package is loaded:
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+ require(earthquakes)
+ head(earthquakes)
+ str(earthquakes)
+```
+
+## Functions 
+
+###   Make a time line geom *geom_timeline()*
+
+ geom_timeline() makes a ggplot2::Geom which plots a time line of earthquakes ranging from xmin to xmaxdates with a point for each earthquake. Optional aesthetics include color, size, and alpha (for transparency). The xaesthetic is a date and an optional y aesthetic is a factor indicating some stratification in which case multiple time lines will be plotted for each level of the factor (e.g. country).
+ 
+ User must specify the following parameters: 
+ 
+ * **data**  - Earthquake data in the dataframe in format of NOAA earthquakes database (Dataframe), mandatory.
+ * **xmindate** as aes parameter: Minimal date of the considering time frame (Date), mandatory.
+ * **xmaxdate** as aes parameter: Maximum date of the considering time frame (Date), mandatory.
+ * **event_date** as aes parameter: date of earthquake, usually name of the column in data (Date), mandatory.
+ * **richter** as aes parameter: Richter`s magnitude of earthquakes, usually name of the column in data (numeric), mandatory.
+ * **death** as aes parameter: deaths produced by earthquakes, usually name of the column in data (numeric), mandatory.
+
+ Optional parameters:
+ 
+ * **colour** as aes parameter: main colour of earthquakes marks (colour name), optional
+ * **scale** as aes parameter: scale of earthquakes marks, coefficient (numeric), optional
+ * **transparency** as aes parameter: transparency of earthquakes marks (numeric, (0..1)), optional
+ * **layers** as aes parameter: groping of earthquakes marks by some parameters, e.g. COUNTRY, optional
+
+  Example of usage:
+```{r, fig.height=5, fig.width=7}
+ require(earthquakes)
+ ggplot2::ggplot() +
+   theme_void() +
+   geom_timeline(data = earthquakes, aes(event_date = DATE,
+                                   xmindate = 2000,
+                                   xmaxdate = 2003,
+                                   richter = EQ_PRIMARY,
+                                   death = DEATHS,
+                                   transparency = 0.3,
+                                   colour = "red",
+                                   scale = 0.5))+
+   theme(legend.position="none")
+```
+
+```{r, fig.height=5, fig.width=7}
+ require(earthquakes)
+ ggplot2::ggplot() +
+   theme_void() +
+   geom_timeline(data = earthquakes, aes(event_date = DATE,
+                                   xmindate = 2000,
+                                   xmaxdate = 2003,
+                                   richter = EQ_PRIMARY,
+                                   death = DEATHS,
+                                   transparency = 0.3,
+                                   colour = "red",
+                                   scale = 0.5, 
+                                   layers = COUNTRY))+
+   theme(legend.position="none")
+```
+
+
+### Make an annotation to timeline_geom
+
+ geom_timeline_label() function makes a ggplot2::Geom intended for adding annotations to the earthquake data. 
+ This geom adds a vertical line to each data point with a text annotation (e.g. the location of the earthquake) 
+ attached to each line. There is an option to subset to n_max number of earthquakes, where we take the n_max largest 
+ (by magnitude) earthquakes. Aesthetics are x, which is the date of the earthquake and label which takes the column 
+  name from which annotations will be obtained.
+
+* **data**  - Earthquake data in the dataframe in format of NOAA earthquakes database (Dataframe), mandatory.
+ * **xmindate** as aes parameter: Minimal date of the considering time frame (Date), mandatory.
+ * **xmaxdate** as aes parameter: Maximum date of the considering time frame (Date), mandatory.
+ * **event_date** as aes parameter: date of earthquake, usually name of the column in data (Date), mandatory.
+ * **richter** as aes parameter: Richter`s magnitude of earthquakes, usually name of the column in data (numeric), mandatory.
+ * **labels** as aes parameter: text labels of earthquakes, usually name of the column in data (character), mandatory.
+
+  Example of usage:
+```{r, fig.height=6, fig.width=8}
+ require(earthquakes)
+   ggplot2::ggplot() +
+   theme_void() +
+   geom_timeline(data = earthquakes, aes(event_date = DATE,
+                                   xmindate = 2000,
+                                   xmaxdate = 2005,
+                                   richter = EQ_PRIMARY,
+                                   death = DEATHS,
+                                   transparency = 0.3,
+                                   colour = "red",
+                                   scale = 0.5,
+                                   layers = COUNTRY))+
+   theme(legend.position="none") +
+   geom_timeline_label(data = earthquakes, aes(event_date = DATE,
+                                         xmindate = 2000,
+                                         xmaxdate = 2005,
+                                         richter = EQ_PRIMARY,
+                                         layers = COUNTRY,
+                                         labels = LOCATION_NAME))
+
+```
+
+###  Cleaning data 
+
+ Function *eq_clean_data()* takes raw NOAA data frame and returns a clean data frame. The clean data frame have the following:
+ 
+ * A date column created by uniting the year, month, day and converting it to the Date class
+ * LATITUDE and LONGITUDE columns converted to numeric class
+ * LOCATION cleaned up by *eq_location_clean()* (see below);
+ * data with no LONGITUDE or LATITUDE removed;
+ * data with no Richter magnitude removed;
+ * data with YEAR B.C. removed.
+ 
+ Function *eq_location_clean()* cleans the LOCATION_NAME column by stripping out the country name (including the colon) and converts names to title case (as opposed to all caps)
+ 
+ Functions *eq_clean_data()* and *eq_location_clean()* take one parameter only: *data* - raw earthquake data as dataframe in format of NOAA earthquakes database.
+ 
+ Examples:
+ 
+```{r, message=FALSE, warning=FALSE}
+ require(earthquakes)
+ filename <- system.file("extdata", "earthquakes.tsv.gz", package = "earthquakes")
+ raw_data <- read_delim(filename, delim = "\t")
+ data <- eq_clean_data(raw_data)
+ head(data)
+```
+ 
+```{r, message=FALSE, warning=FALSE}
+ require(earthquakes)
+ filename <- system.file("extdata", "earthquakes.tsv.gz", package = "earthquakes")
+ raw_data <- read_delim(filename, delim = "\t")
+ data <- eq_location_clean(raw_data)
+ head(data$LOCATION_NAME)
+```
+ 
+### Mapping data
+
+Function *eq_create_label()* takes the dataset as an argument and creates an HTML label that can be used as the annotation text in the leaflet map. This function put together a character string for each earthquake that will show the cleaned location (as cleaned by the eq_location_clean() function descibed above), the magnitude (EQ_PRIMARY), and the total number of deaths (TOTAL_DEATHS), with boldface labels for each ("Location", "Total deaths", and "Magnitude"). If an earthquake is missing values for any of these, both the label and the value are skipped for that element of the tag.
+
+Functions *eq_create_label()* takes one parameter only: *data* - raw earthquake data as dataframe in format of NOAA earthquakes database.
+
+Example:
+```{r, message=FALSE, warning=FALSE}
+require(earthquakes)
+labels <- eq_create_label(earthquakes)
+head(labels)
+```
+
+Function *eq_map()* takes an argument data containing the filtered data frame with earthquakes to visualize. The function maps the epicenters (LATITUDE/LONGITUDE) and annotates each point with in pop up window containing annotation data stored in a column of the data frame. The user is able to choose which column is used for the annotation in the pop-up with a function argument named **annot_col**. Each earthquake is represented as a circle, and the radius of the circle is proportional to the earthquake's magnitude (EQ_PRIMARY).
+
+Function *eq_map()* takes two parameters:
+ * *data* - raw earthquake data as dataframe in format of NOAA earthquakes database;
+ * *annot_col* - column in data frame to use for annotation
+ 
+ Example:
+ 
+```{r, fig.height=5, fig.width=7, message=FALSE, warning=FALSE}
+ require(earthquakes)
+
+ filename <- system.file("extdata", "earthquakes.tsv.gz", package = "earthquakes")
+ readr::read_delim(filename, delim = "\t") %>%
+   eq_clean_data() %>%
+   dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) %>%
+   dplyr::mutate(popup_text = eq_create_label(.)) %>%
+   eq_map(annot_col = "popup_text")
+ ```
+ 

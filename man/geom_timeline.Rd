@@ -2,7 +2,7 @@
 % Please edit documentation in R/earthquake.R
 \name{geom_timeline}
 \alias{geom_timeline}
-\title{Make a timeline geom}
+\title{Make a time line geom}
 \usage{
 geom_timeline(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
@@ -11,7 +11,7 @@ geom_timeline(mapping = NULL, data = NULL, stat = "identity",
 \arguments{
 \item{mapping}{ggplot parameter}
 
-\item{data}{Earthquake data in the dataframe in format of NOAA earthquakes database.}
+\item{data}{Earthquake data in the dataframe in format of NOAA earthquakes database (Dataframe), mandatory.}
 
 \item{stat}{ggplot parameter}
 
@@ -25,29 +25,34 @@ geom_timeline(mapping = NULL, data = NULL, stat = "identity",
 
 \item{...}{other ggplot parameter}
 
-\item{xmindate}{aes parameters: Minimal date of the considering time frame, Date}
+\item{xmindate}{aes parameters: Minimal date of the considering time frame (Date), mandatory.}
 
-\item{xmaxdate}{aes parameters: Maximum date of the considering time frame, Date}
+\item{xmaxdate}{aes parameters: Maximum date of the considering time frame (Date), mandatory.}
 
-\item{event_date}{aes parameters: date of earthquake, usually name of the column in data (Date)}
+\item{event_date}{aes parameters: date of earthquake, usually name of the column in data (Date), mandatory.}
 
-\item{richter}{aes parameters: Richter`s magnitude of earthquakes, usually name of the column in data (numeric)}
+\item{richter}{aes parameters: Richter`s magnitude of earthquakes, usually name of the column in data (numeric), mandatory.}
 
-\item{death}{aes parameters: deaths produced by earthquakes, usually name of the column in data (numeric)}
+\item{death}{aes parameters: deaths produced by earthquakes, usually name of the column in data (numeric), mandatory.}
 
-\item{colour}{aes parameters: main colour of earthquakes marks}
+\item{colour}{aes parameters: main colour of earthquakes marks (colour name), optional}
 
-\item{scale}{aes parameters: scale of earthquakes marks}
+\item{scale}{aes parameters: scale of earthquakes marks, coefficient (numeric), optional}
 
-\item{transparency}{aes parameters: transparency of earthquakes marks}
+\item{transparency}{aes parameters: transparency of earthquakes marks (numeric, (0..1)), optional}
 
-\item{layers}{aes parameters: groping of earthquakes marks by some parameters, e.g. COUNTRY}
+\item{layers}{aes parameters: groping of earthquakes marks by some parameters, e.g. COUNTRY, optional}
 }
 \value{
 timeline geom (ggplot2 object)
 }
 \description{
-Make a timeline geom
+geom_timeline() makes a ggplot2::Geom with timeline and special marks for an earthquakes, occured in the defined
+by user date interval. User must specify the following parameters: begin date; end date; column in data with earthquakes date to use;
+column in data with earthquakes magnitude to use, column in data with earthquakes deaths to use.
+}
+\details{
+See other parameters below.
 }
 \examples{
 

@@ -13,7 +13,8 @@ eq_location_clean(raw_earthquake)
 data frame with cleaned up LOCATION_NAME field
 }
 \description{
-Clean Earthquake location from NOAA Earthquake database
+Function eq_location_clean() cleans the LOCATION_NAME column by stripping out the country name
+(including the colon) and converts names to title case (as opposed to all caps).
 }
 \examples{
 filename <- system.file("extdata", "earthquakes.tsv.gz", package = "earthquakes")

@@ -15,7 +15,12 @@ eq_map(data, annot_col = "EQ_PRIMARY")
 leaflet map object
 }
 \description{
-Make an Earthquake interactive map
+Function eq_map() takes an argument data containing the filtered data frame with earthquakes to visualize.
+The function maps the epicenters (LATITUDE/LONGITUDE) and annotates each point with in pop up
+window containing annotation data stored in a column of the data frame.
+The user is able to choose which column is used for the annotation in the pop-up with
+a function argument named annot_col. Each earthquake is represented as a circle, and the radius
+of the circle is proportional to the earthquake's magnitude (EQ_PRIMARY).
 }
 \examples{
 filename <- system.file("extdata", "earthquakes.tsv.gz", package = "earthquakes")

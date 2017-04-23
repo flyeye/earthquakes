@@ -55,13 +55,19 @@ GeomTimeLine <- ggproto("GeomTimeLine", GeomBlank,
 
                            for (l in 1:nlayers)
                            {
-                               l_data <- dplyr::filter(clear_data, layers == levels(f)[l])
-                               if (nrow(l_data) == 0)
-                                 next
+                               if (nlayers > 1)
+                                 {
+                                   l_data <- dplyr::filter(clear_data, layers == levels(f)[l])
+                                   if (nrow(l_data) == 0)
+                                     next
+                               } else
+                               {
+                                 l_data <- clear_data
+                               }
 
-                               cat(l, "\n")
-                               cat(nrow(l_data), "\n")
-                               cat("---\n")
+                               # cat(l, "\n")
+                               # cat(nrow(l_data), "\n")
+                               # cat("---\n")
 
                                circles <- gList()
 
@@ -85,6 +91,9 @@ GeomTimeLine <- ggproto("GeomTimeLine", GeomBlank,
                                if (nlayers>1)
                                {
                                  x_txt <- grid::textGrob(l_data$layers[1], x = unit(c(0.05), "npc"), y = unit(c(y_pos+(l-1)*0.2 + 0.05), "npc"), gp=gpar(fontsize=10))
+                               } else
+                               {
+                                 x_txt <- grid::nullGrob()
                                }
 
                                g <- grid::gList(g, circles, x1, x_txt)
@@ -174,18 +183,24 @@ GeomTimeLine <- ggproto("GeomTimeLine", GeomBlank,
 
                          })
 
-#' Make a timeline geom
+#' Make a time line geom
 #'
-#' @param data Earthquake data in the dataframe in format of NOAA earthquakes database.
-#' @param xmindate aes parameters: Minimal date of the considering time frame, Date
-#' @param xmaxdate aes parameters: Maximum date of the considering time frame, Date
-#' @param event_date aes parameters: date of earthquake, usually name of the column in data (Date)
-#' @param richter aes parameters: Richter`s magnitude of earthquakes, usually name of the column in data (numeric)
-#' @param death aes parameters: deaths produced by earthquakes, usually name of the column in data (numeric)
-#' @param colour aes parameters: main colour of earthquakes marks
-#' @param scale aes parameters: scale of earthquakes marks
-#' @param transparency aes parameters: transparency of earthquakes marks
-#' @param layers aes parameters: groping of earthquakes marks by some parameters, e.g. COUNTRY
+#' geom_timeline() makes a ggplot2::Geom with timeline and special marks for an earthquakes, occured in the defined
+#' by user date interval. User must specify the following parameters: begin date; end date; column in data with earthquakes date to use;
+#' column in data with earthquakes magnitude to use, column in data with earthquakes deaths to use.
+#'
+#'  See other parameters below.
+#'
+#' @param data Earthquake data in the dataframe in format of NOAA earthquakes database (Dataframe), mandatory.
+#' @param xmindate aes parameters: Minimal date of the considering time frame (Date), mandatory.
+#' @param xmaxdate aes parameters: Maximum date of the considering time frame (Date), mandatory.
+#' @param event_date aes parameters: date of earthquake, usually name of the column in data (Date), mandatory.
+#' @param richter aes parameters: Richter`s magnitude of earthquakes, usually name of the column in data (numeric), mandatory.
+#' @param death aes parameters: deaths produced by earthquakes, usually name of the column in data (numeric), mandatory.
+#' @param colour aes parameters: main colour of earthquakes marks (colour name), optional
+#' @param scale aes parameters: scale of earthquakes marks, coefficient (numeric), optional
+#' @param transparency aes parameters: transparency of earthquakes marks (numeric, (0..1)), optional
+#' @param layers aes parameters: groping of earthquakes marks by some parameters, e.g. COUNTRY, optional
 #' @param mapping ggplot parameter
 #' @param stat ggplot parameter
 #' @param position ggplot parameter
@@ -241,7 +256,7 @@ GeomTimeLineLabel <- ggproto("GeomTimeLineLabel", GeomBlank,
                           ## Transform the data first
 
                           #str(data)
-                          print(data)
+                          #print(data)
                           #cat("---\n")
 
                           mindate <- as.Date(paste0(data$xmindate[1], "-01-01 00:00:00"))
@@ -315,14 +330,20 @@ GeomTimeLineLabel <- ggproto("GeomTimeLineLabel", GeomBlank,
                         })
 
 
-#' Make a timeline label geiom
+#' Make a time line label geom
 #'
-#' @param data Earthquake data in the dataframe in format of NOAA earthquakes database.
-#' @param xmindate aes parameters: Minimal date of the considering time frame, Date
-#' @param xmaxdate aes parameters: Maximum date of the considering time frame, Date
-#' @param event_date aes parameters: date of earthquake, usually name of the column in data (Date)
-#' @param richter aes parameters: Richter`s magnitude of earthquakes, usually name of the column in data (numeric)
-#' @param labels aes parameters: text labels of earthquakes, usually name of the column in data (character)
+#' geom_timeline_label() function makes a ggplot2::Geom intended for adding annotations to the earthquake data.
+#' This geom adds a vertical line to each data point with a text annotation (e.g. the location of the earthquake)
+#' attached to each line. There is an option to subset to n_max number of earthquakes, where we take the n_max largest
+#' (by magnitude) earthquakes. Aesthetics are x, which is the date of the earthquake and label which takes the column
+#' name from which annotations will be obtained.
+#'
+#' @param data Earthquake data in the dataframe in format of NOAA earthquakes database (Dataframe), mandatory.
+#' @param xmindate aes parameters: Minimal date of the considering time frame (Date), mandatory.
+#' @param xmaxdate aes parameters: Maximum date of the considering time frame (Date), mandatory.
+#' @param event_date aes parameters: date of earthquake, usually name of the column in data (Date), mandatory.
+#' @param richter aes parameters: Richter`s magnitude of earthquakes, usually name of the column in data (numeric), mandatory.
+#' @param labels aes parameters: text labels of earthquakes, usually name of the column in data (character), mandatory.
 #' @param mapping ggplot parameter
 #' @param stat ggplot parameter
 #' @param position ggplot parameter
@@ -377,6 +398,9 @@ geom_timeline_label <- function(mapping = NULL,
 
 #' Clean Earthquake location from NOAA Earthquake database
 #'
+#' Function eq_location_clean() cleans the LOCATION_NAME column by stripping out the country name
+#' (including the colon) and converts names to title case (as opposed to all caps).
+#'
 #' @param raw_earthquake Raw earthquake data in the dataframe in format of NOAA earthquakes database.
 #'
 #' @return
@@ -404,15 +428,18 @@ eq_location_clean <- function(raw_earthquake)
 
 #' Cleaning Earthquake data
 #'
+#' Under the cleaning we understand the following:
+#' new DATE column added;
+#' LOCATION cleaned up;
+#' lines with no LONGITUDE or LATITUDE removed;
+#' lines with no Richter magnitude removed;
+#' data with YEAR B.C. removed.
+#'
 #' @param data Raw earthquake data in the dataframe in format of NOAA earthquakes database.
 #'
 #' @return
-#' Data frame with cleaned up data:
-#' - new DATE column added
-#' - LoCATION cleaned up
-#' - lines with no LONGITUDE or LATITUDE removed
-#' - lines with no Richter magnitude removed
-#' - lines with YEAR B.C. removed
+#' Data frame with cleaned up data
+#'
 #'
 #' @export
 #'
@@ -448,6 +475,13 @@ eq_clean_data <- function(data)
 
 #' Make an Earthquake interactive map
 #'
+#' Function eq_map() takes an argument data containing the filtered data frame with earthquakes to visualize.
+#' The function maps the epicenters (LATITUDE/LONGITUDE) and annotates each point with in pop up
+#' window containing annotation data stored in a column of the data frame.
+#' The user is able to choose which column is used for the annotation in the pop-up with
+#' a function argument named annot_col. Each earthquake is represented as a circle, and the radius
+#' of the circle is proportional to the earthquake's magnitude (EQ_PRIMARY).
+#'
 #' @param data Dataframe with earthquake data. Structure and columns names must be the same as in NOAA earthquake database.
 #' @param annot_col Name of the column in the data frame used for popup annotation.
 #'
@@ -475,6 +509,14 @@ eq_map <- function(data, annot_col = "EQ_PRIMARY")
 }
 
 #' Make a HTML description of the earthquakes
+#'
+#' Function eq_create_label() takes the dataset as an argument and creates an HTML label that can be used
+#' as the annotation text in the leaflet map. This function put together a character string for each earthquake that
+#' will show the cleaned location (as cleaned by the eq_location_clean() function descibed above),
+#' the magnitude (EQ_PRIMARY), and the total number of deaths (TOTAL_DEATHS),
+#' with boldface labels for each ("Location", "Total deaths", and "Magnitude").
+#' If an earthquake is missing values for any of these, both the label and the value are skipped for
+#' that element of the tag.
 #'
 #' @param data Dataframe with earthquake data. Structure and columns names must be the same as in NOAA earthquake database.
 #'

@@ -2,7 +2,7 @@
 % Please edit documentation in R/earthquake.R
 \name{geom_timeline_label}
 \alias{geom_timeline_label}
-\title{Make a timeline label geiom}
+\title{Make a time line label geom}
 \usage{
 geom_timeline_label(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
@@ -11,7 +11,7 @@ geom_timeline_label(mapping = NULL, data = NULL, stat = "identity",
 \arguments{
 \item{mapping}{ggplot parameter}
 
-\item{data}{Earthquake data in the dataframe in format of NOAA earthquakes database.}
+\item{data}{Earthquake data in the dataframe in format of NOAA earthquakes database (Dataframe), mandatory.}
 
 \item{stat}{ggplot parameter}
 
@@ -25,21 +25,25 @@ geom_timeline_label(mapping = NULL, data = NULL, stat = "identity",
 
 \item{...}{other ggplot parameter}
 
-\item{xmindate}{aes parameters: Minimal date of the considering time frame, Date}
+\item{xmindate}{aes parameters: Minimal date of the considering time frame (Date), mandatory.}
 
-\item{xmaxdate}{aes parameters: Maximum date of the considering time frame, Date}
+\item{xmaxdate}{aes parameters: Maximum date of the considering time frame (Date), mandatory.}
 
-\item{event_date}{aes parameters: date of earthquake, usually name of the column in data (Date)}
+\item{event_date}{aes parameters: date of earthquake, usually name of the column in data (Date), mandatory.}
 
-\item{richter}{aes parameters: Richter`s magnitude of earthquakes, usually name of the column in data (numeric)}
+\item{richter}{aes parameters: Richter`s magnitude of earthquakes, usually name of the column in data (numeric), mandatory.}
 
-\item{labels}{aes parameters: text labels of earthquakes, usually name of the column in data (character)}
+\item{labels}{aes parameters: text labels of earthquakes, usually name of the column in data (character), mandatory.}
 }
 \value{
 Timeline labels geom (ggplot2 object)
 }
 \description{
-Make a timeline label geiom
+geom_timeline_label() function makes a ggplot2::Geom intended for adding annotations to the earthquake data.
+This geom adds a vertical line to each data point with a text annotation (e.g. the location of the earthquake)
+attached to each line. There is an option to subset to n_max number of earthquakes, where we take the n_max largest
+(by magnitude) earthquakes. Aesthetics are x, which is the date of the earthquake and label which takes the column
+name from which annotations will be obtained.
 }
 \examples{
   ggplot2::ggplot() +
