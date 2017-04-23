@@ -52,10 +52,57 @@ test_that("create label", {
 
 })
 
-# geom_timeline_label
-# geom_timeline
 
-#test_that("eq_map", {
-#  map_ <- eq_map(earthquakes)
-#  expect_that(earthquakes::map, equals("<b>Location:</b> Sanriku"))
-#})
+test_that("geom_timeline_label", {
+  require(digest)
+
+  g <- ggplot2::ggplot() +
+     theme_void() +
+     geom_timeline(data = earthquakes, aes(event_date = DATE,
+                                     xmindate = 2000,
+                                     xmaxdate = 2010,
+                                     richter = EQ_PRIMARY,
+                                     death = DEATHS,
+                                     transparency = 0.3,
+                                     colour = "red",
+                                     scale = 0.5,
+                                     layers = COUNTRY))+
+     theme(legend.position="none") +
+     geom_timeline_label(data = earthquakes, aes(event_date = DATE,
+                                           xmindate = 2000,
+                                           xmaxdate = 2010,
+                                           richter = EQ_PRIMARY,
+                                           layers = COUNTRY,
+                                           labels = LOCATION_NAME))
+
+  crc <- digest(g, algo = "crc32", serialize = TRUE)
+  expect_that(crc, equals("539b8d4c"))
+
+})
+
+test_that("geom_timeline", {
+  require(digest)
+
+  g <- ggplot2::ggplot() +
+    theme_void() +
+    theme(legend.position="none") +
+    geom_timeline(data = earthquakes, aes(event_date = DATE,
+                                          xmindate = 2000,
+                                          xmaxdate = 2010,
+                                          richter = EQ_PRIMARY,
+                                          death = DEATHS,
+                                          transparency = 0.3,
+                                          colour = "red",
+                                          scale = 0.5,
+                                          layers = COUNTRY))
+
+  crc <- digest(g, algo = "crc32", serialize = TRUE)
+  expect_that(crc, equals("ce7ebe83"))
+
+})
+
+test_that("eq_map", {
+  require(digest)
+  map_ <- eq_map(earthquakes)
+  expect_that(digest(map_), equals("db17419b1ea0c4a0ad2d4b9a9966e75e"))
+})
