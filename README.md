@@ -9,7 +9,7 @@ Second main function is *eq_map()*. It makes a interactive map with earthquakes 
 There are a few data cleaning and processing function. 
 See details in packages vignette.
 
-![](https://travis-ci.org/flyeye/Fars.svg?branch=master)
+![](https://travis-ci.org/flyeye/earthquakes.svg?branch=master)
 Last build [details](https://travis-ci.org/flyeye/earthquakes) on Travis CI service.
 
 ## Installation

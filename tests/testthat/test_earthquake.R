@@ -79,7 +79,9 @@ test_that("geom_timeline_label", {
   connection <- file(filename, "rb")
   raw_img <- readBin(connection, "raw", n = file.size(filename))
   crc <- digest(raw_img, algo = "crc32", serialize = TRUE)
-  expect_that(crc, equals("ade97fc5"))
+  expect_that(crc, equals("5e58b604"))
+  #expect_that(crc, equals("ade97fc5"))
+
 
 })
 
@@ -104,7 +106,9 @@ test_that("geom_timeline", {
   connection <- file(filename, "rb")
   raw_img <- readBin(connection, "raw", n = file.size(filename))
   crc <- digest(raw_img, algo = "crc32", serialize = TRUE)
-  expect_that(crc, equals("6fa5e984"))
+
+  expect_that(crc, equals("bbdb0f4"))
+  #expect_that(crc, equals("6fa5e984"))
 
 })
 
