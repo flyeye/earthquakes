@@ -26,7 +26,7 @@ of the circle is proportional to the earthquake's magnitude (EQ_PRIMARY).
 filename <- system.file("extdata", "earthquakes.tsv.gz", package = "earthquakes")
 readr::read_delim(filename, delim = "\\t") \%>\%
   eq_clean_data() \%>\%
-  dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) \%>\%
+  dplyr::filter(COUNTRY == "MEXICO" & as.integer(YEAR) >= 2000) \%>\%
   dplyr::mutate(popup_text = eq_create_label(.)) \%>\%
   eq_map(annot_col = "popup_text")
 

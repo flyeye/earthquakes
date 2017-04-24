@@ -11,8 +11,8 @@
 ## ---- fig.height=5, fig.width=7------------------------------------------
  require(earthquakes)
  ggplot2::ggplot() +
-   theme_void() +
-   geom_timeline(data = earthquakes, aes(event_date = DATE,
+   ggplot2::theme_void() +
+   geom_timeline(data = earthquakes, ggplot2::aes(event_date = DATE,
                                    xmindate = 2000,
                                    xmaxdate = 2003,
                                    richter = EQ_PRIMARY,
@@ -20,13 +20,13 @@
                                    transparency = 0.3,
                                    colour = "red",
                                    scale = 0.5))+
-   theme(legend.position="none")
+   ggplot2::theme(legend.position="none")
 
 ## ---- fig.height=5, fig.width=7------------------------------------------
  require(earthquakes)
  ggplot2::ggplot() +
-   theme_void() +
-   geom_timeline(data = earthquakes, aes(event_date = DATE,
+   ggplot2::theme_void() +
+   geom_timeline(data = earthquakes, ggplot2::aes(event_date = DATE,
                                    xmindate = 2000,
                                    xmaxdate = 2003,
                                    richter = EQ_PRIMARY,
@@ -35,13 +35,13 @@
                                    colour = "red",
                                    scale = 0.5, 
                                    layers = COUNTRY))+
-   theme(legend.position="none")
+   ggplot2::theme(legend.position="none")
 
 ## ---- fig.height=6, fig.width=8------------------------------------------
  require(earthquakes)
    ggplot2::ggplot() +
-   theme_void() +
-   geom_timeline(data = earthquakes, aes(event_date = DATE,
+   ggplot2::theme_void() +
+   geom_timeline(data = earthquakes, ggplot2::aes(event_date = DATE,
                                    xmindate = 2000,
                                    xmaxdate = 2005,
                                    richter = EQ_PRIMARY,
@@ -50,8 +50,8 @@
                                    colour = "red",
                                    scale = 0.5,
                                    layers = COUNTRY))+
-   theme(legend.position="none") +
-   geom_timeline_label(data = earthquakes, aes(event_date = DATE,
+   ggplot2::theme(legend.position="none") +
+   geom_timeline_label(data = earthquakes, ggplot2::aes(event_date = DATE,
                                          xmindate = 2000,
                                          xmaxdate = 2005,
                                          richter = EQ_PRIMARY,
@@ -77,4 +77,14 @@
 require(earthquakes)
 labels <- eq_create_label(earthquakes)
 head(labels)
+
+## ---- fig.height=5, fig.width=7, message=FALSE, warning=FALSE------------
+ require(earthquakes)
+
+ filename <- system.file("extdata", "earthquakes.tsv.gz", package = "earthquakes")
+ readr::read_delim(filename, delim = "\t") %>%
+   eq_clean_data() %>%
+   dplyr::filter(COUNTRY == "MEXICO" & as.integer(YEAR) >= 2000) %>%
+   dplyr::mutate(popup_text = eq_create_label(.)) %>%
+   eq_map(annot_col = "popup_text")
 
