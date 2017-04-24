@@ -23,17 +23,16 @@ geom_timeline_label(mapping = NULL, data = NULL, stat = "identity",
 
 \item{inherit.aes}{ggplot parameter}
 
-\item{...}{other ggplot parameter}
+\item{...}{other ggplot parameter
 
-\item{xmindate}{aes parameters: Minimal date of the considering time frame (Date), mandatory.}
+The folloing parameters must be passed as parameters of aesthetic:
 
-\item{xmaxdate}{aes parameters: Maximum date of the considering time frame (Date), mandatory.}
-
-\item{event_date}{aes parameters: date of earthquake, usually name of the column in data (Date), mandatory.}
-
-\item{richter}{aes parameters: Richter`s magnitude of earthquakes, usually name of the column in data (numeric), mandatory.}
-
-\item{labels}{aes parameters: text labels of earthquakes, usually name of the column in data (character), mandatory.}
+xmindate Minimal date of the considering time frame (Date), mandatory.
+xmaxdate Maximum date of the considering time frame (Date), mandatory.
+event_date Date of earthquake, usually name of the column in data (Date), mandatory.
+richter Richter`s magnitude of earthquakes, usually name of the column in data (numeric), mandatory.
+death Deaths produced by earthquakes, usually name of the column in data (numeric), mandatory.
+labels Text labels of earthquakes, usually name of the column in data (character), mandatory.}
 }
 \value{
 Timeline labels geom (ggplot2 object)
@@ -55,7 +54,7 @@ name from which annotations will be obtained.
                                   death = DEATHS,
                                   transparency = 0.3,
                                   colour = "red",
-                                  scale = 0.5,
+                                 scale = 0.5,
                                   layers = COUNTRY))+
   theme(legend.position="none") +
   geom_timeline_label(data = earthquakes, aes(event_date = DATE,
@@ -63,6 +62,6 @@ name from which annotations will be obtained.
                                         xmaxdate = 2010,
                                         richter = EQ_PRIMARY,
                                         layers = COUNTRY,
-                                        labels = LOCATION_NAME))
+                                       labels = LOCATION_NAME))
 
 }

@@ -9,6 +9,8 @@ Second main function is *eq_map()*. It makes a interactive map with earthquakes 
 There are a few data cleaning and processing function. 
 See details in packages vignette.
 
+Last build [details](https://travis-ci.org/flyeye/earthquakes) on Travis CI service.
+
 ## Installation
 
 You can install Fars from github with:

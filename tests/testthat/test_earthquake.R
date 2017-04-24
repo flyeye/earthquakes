@@ -58,25 +58,28 @@ test_that("geom_timeline_label", {
 
   g <- ggplot2::ggplot() +
      theme_void() +
-     geom_timeline(data = earthquakes, aes(event_date = DATE,
-                                     xmindate = 2000,
-                                     xmaxdate = 2010,
-                                     richter = EQ_PRIMARY,
-                                     death = DEATHS,
-                                     transparency = 0.3,
-                                     colour = "red",
-                                     scale = 0.5,
-                                     layers = COUNTRY))+
-     theme(legend.position="none") +
+     # geom_timeline(data = earthquakes, aes(event_date = DATE,
+     #                                 xmindate = 2000,
+     #                                 xmaxdate = 2010,
+     #                                 richter = EQ_PRIMARY,
+     #                                 death = DEATHS,
+     #                                 transparency = 0.3,
+     #                                 colour = "red",
+     #                                 scale = 0.5,
+     #                                 layers = COUNTRY))+
+     # theme(legend.position="none") +
      geom_timeline_label(data = earthquakes, aes(event_date = DATE,
                                            xmindate = 2000,
                                            xmaxdate = 2010,
                                            richter = EQ_PRIMARY,
                                            layers = COUNTRY,
                                            labels = LOCATION_NAME))
-
-  crc <- digest(g, algo = "crc32", serialize = TRUE)
-  expect_that(crc, equals("539b8d4c"))
+  filename <- "test_geom_timeline_label.png"
+  ggsave(filename, plot = g, width = 10, height = 10)
+  connection <- file(filename, "rb")
+  raw_img <- readBin(connection, "raw", n = file.size(filename))
+  crc <- digest(raw_img, algo = "crc32", serialize = TRUE)
+  expect_that(crc, equals("ade97fc5"))
 
 })
 
@@ -96,8 +99,12 @@ test_that("geom_timeline", {
                                           scale = 0.5,
                                           layers = COUNTRY))
 
-  crc <- digest(g, algo = "crc32", serialize = TRUE)
-  expect_that(crc, equals("ce7ebe83"))
+  filename <- "test_geom_timeline.png"
+  ggsave(filename, plot = g, width = 10, height = 10)
+  connection <- file(filename, "rb")
+  raw_img <- readBin(connection, "raw", n = file.size(filename))
+  crc <- digest(raw_img, algo = "crc32", serialize = TRUE)
+  expect_that(crc, equals("6fa5e984"))
 
 })
 

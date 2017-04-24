@@ -31,7 +31,7 @@ There are a few data cleaning and processing function. See details below.
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
   require(readr)
   filename <- system.file("extdata", "earthquakes.tsv.gz", package = "earthquakes")
-  raw_data <- read_delim(filename, delim = "\t")
+  raw_data <- readr::read_delim(filename, delim = "\t")
 ```
 
  Cleaned up sample is stored in *tbl_df data.frame* **earthquakes** (same name as package name) and can be accessed directly when package is loaded:
