@@ -1,7 +1,7 @@
 ## ---- echo=TRUE, message=FALSE, warning=FALSE----------------------------
   require(readr)
   filename <- system.file("extdata", "earthquakes.tsv.gz", package = "earthquakes")
-  raw_data <- read_delim(filename, delim = "\t")
+  raw_data <- readr::read_delim(filename, delim = "\t")
 
 ## ---- echo=TRUE, message=FALSE, warning=FALSE----------------------------
  require(earthquakes)
@@ -59,12 +59,12 @@
                                          labels = LOCATION_NAME))
 
 
-## ---- message=FALSE, warning=FALSE---------------------------------------
- require(earthquakes)
- filename <- system.file("extdata", "earthquakes.tsv.gz", package = "earthquakes")
- raw_data <- read_delim(filename, delim = "\t")
- data <- eq_clean_data(raw_data)
- head(data)
+## ---- eval=FALSE, message=FALSE, warning=FALSE, include=FALSE------------
+#   require(earthquakes)
+#   filename <- system.file("extdata", "earthquakes.tsv.gz", package = "earthquakes")
+#   raw_data <- read_delim(filename, delim = "\t")
+#   data <- eq_clean_data(raw_data)
+#   head(data)
 
 ## ---- message=FALSE, warning=FALSE---------------------------------------
  require(earthquakes)
@@ -77,14 +77,4 @@
 require(earthquakes)
 labels <- eq_create_label(earthquakes)
 head(labels)
-
-## ---- fig.height=5, fig.width=7, message=FALSE, warning=FALSE------------
- require(earthquakes)
-
- filename <- system.file("extdata", "earthquakes.tsv.gz", package = "earthquakes")
- readr::read_delim(filename, delim = "\t") %>%
-   eq_clean_data() %>%
-   dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) %>%
-   dplyr::mutate(popup_text = eq_create_label(.)) %>%
-   eq_map(annot_col = "popup_text")
 

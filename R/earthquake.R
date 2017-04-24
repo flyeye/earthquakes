@@ -452,6 +452,7 @@ eq_location_clean <- function(raw_earthquake)
 #' @export
 #'
 #' @import tidyr dplyr tidyverse
+#' @importFrom stats setNames
 #'
 #' @examples
 #'
@@ -462,19 +463,30 @@ eq_location_clean <- function(raw_earthquake)
 eq_clean_data <- function(data)
 {
 
-  earthquake <- data[!is.na(data$MONTH) &
-                               !is.na(data$DAY) &
-                               (data$YEAR>=0) &
-                               !is.na(data$LONGITUDE) &
-                               !is.na(data$LATITUDE) &
-                               !is.na(data$EQ_PRIMARY),]
+  earthquake <- data[(!is.na(data$MONTH)) &
+                       (!is.na(data$DAY)) &
+                       (data$YEAR>=0),]
 
-  earthquake <- earthquake %>% dplyr::mutate(DATE = as.Date(paste0(earthquake$YEAR, "-", sprintf("%02d", earthquake$MONTH), "-", sprintf("%02d", earthquake$DAY)), format = "%Y-%m-%d"),
-                                      LONGITUDE = as.numeric(LONGITUDE),
-                                      LATITUDE = as.numeric(LATITUDE),
-                                      DEATHS = as.numeric(DEATHS),
-                                      EQ_MAG_MS = as.numeric(EQ_MAG_MS),
-                                      EQ_PRIMARY = as.numeric(EQ_PRIMARY))
+  earthquake$DATE <- as.Date(paste0(earthquake$YEAR, "-", sprintf("%02d", earthquake$MONTH), "-", sprintf("%02d", earthquake$DAY)), format = "%Y-%m-%d")
+
+  earthquake <- dplyr::mutate_(earthquake, .dots = setNames("as.numeric(DEATHS)", "DEATHS"))
+  earthquake <- dplyr::mutate_(earthquake, .dots = setNames("as.numeric(DEATHS)", "DEATHS"))
+  earthquake <- dplyr::mutate_(earthquake, .dots = setNames("as.numeric(LONGITUDE)", "LONGITUDE"))
+  earthquake <- dplyr::mutate_(earthquake, .dots = setNames("as.numeric(LATITUDE)", "LATITUDE"))
+  earthquake <- dplyr::mutate_(earthquake, .dots = setNames("as.numeric(EQ_MAG_MS)", "EQ_MAG_MS"))
+  earthquake <- dplyr::mutate_(earthquake, .dots = setNames("as.numeric(EQ_PRIMARY)", "EQ_PRIMARY"))
+
+  # earthquake <- earthquake %>% dplyr::mutate(DATE = as.Date(paste0(earthquake$YEAR, "-", sprintf("%02d", earthquake$MONTH), "-", sprintf("%02d", earthquake$DAY)), format = "%Y-%m-%d"),
+  #                                            LONGITUDE = as.numeric(LONGITUDE),
+  #                                            LATITUDE = as.numeric(LATITUDE),
+  #                                            DEATHS = as.numeric(DEATHS),
+  #                                            EQ_MAG_MS = as.numeric(EQ_MAG_MS),
+  #                                            EQ_PRIMARY = as.numeric(EQ_PRIMARY))
+
+  earthquake <- earthquake[(!is.na(earthquake$LONGITUDE)) &
+                       (!is.na(earthquake$LATITUDE)) &
+                       (!is.na(earthquake$EQ_PRIMARY)),]
+
 
   return(eq_location_clean(earthquake))
 

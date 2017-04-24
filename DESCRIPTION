@@ -11,7 +11,7 @@ Description: Earthquakes package contains a two main functions one can use to vi
 License: MIT + file LICENSE
 Encoding: UTF-8
 Depends: R(>= 2.10.0), tidyverse, grid, ggplot2
-Imports: dplyr, readr, tidyr, leaflet, stringr, lubridate
+Imports: dplyr, readr, tidyr, leaflet, stringr, lubridate, stats
 LazyData: true
 RoxygenNote: 6.0.1
 Suggests: knitr,

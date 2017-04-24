@@ -152,7 +152,7 @@ There are a few data cleaning and processing function. See details below.
  
  Examples:
  
-```{r, message=FALSE, warning=FALSE}
+```{r, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
  require(earthquakes)
  filename <- system.file("extdata", "earthquakes.tsv.gz", package = "earthquakes")
  raw_data <- read_delim(filename, delim = "\t")
